@@ -19,6 +19,8 @@ from django.contrib import admin
 from bbc import views
 
 urlpatterns = [
-    url(r'^$', views.home_page, name='home')
+    url(r'^$', views.home_page, name='home'),
+    url(r'^study/$', views.study, name='study'),
+    url(r'^study/(?P<study_id>\w+)/$', views.study, name='study'),
     #url(r'^admin/', include(admin.site.urls)),
 ]

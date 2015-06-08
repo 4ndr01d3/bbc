@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>BBCatalog: Search by Study</title>
+    </head>
+    <body>
+        <h1>BBCatalog</h1>
+
+            <a class="study_link" href="/study">Search</a>
+        <p>Page for the studies</p>
+        <p>Search:</p>
+        <form method="POST">
+            <input id ="text_search" type="text" name="text_search" placeholder="Search a study">
+            {% csrf_token %}
+        </form>
+        {% if text_search %}
+            <h2>Results:</h2>
+
+            <table id="result_table">
+                <tr>
+                    <td>
+                        <a href="/study/1">{{ text_search }}</a>
+                    </td>
+                </tr>
+            </table>
+        {% endif %}
+    </body>
+</html>

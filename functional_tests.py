@@ -17,6 +17,7 @@ class NewVisitorTest(unittest.TestCase):  #1
     def test_can_search_studies_and_select_the_result(self):
         non_defined_study ="non_defined_study"
         defined_study ="test_study"
+        study_link="a.study_link"
 
         # Edith has heard about a cool new online to-do app. She goes
         # to check out its homepage
@@ -28,12 +29,12 @@ class NewVisitorTest(unittest.TestCase):  #1
         self.assertIn('BBCatalog', header_text)
 
         # Follows the link to search studies
-        search_link = self.browser.find_element_by_css_selector("a.search_link")
+        search_link = self.browser.find_element_by_css_selector(study_link)
         search_link.click()
         # the new page has the word 'search' in the title
-        self.assertIn('search', self.browser.title)
+        self.assertIn('Search', self.browser.title)
 
-        # Inputs a text fro an non-existing study in the general text search
+        # Inputs a text for an non-existing study in the general text search
         inputbox = self.browser.find_element_by_id('text_search')
         self.assertEqual(
             inputbox.get_attribute('placeholder'),
@@ -43,27 +44,31 @@ class NewVisitorTest(unittest.TestCase):  #1
         inputbox.send_keys(Keys.ENTER)
 
         # There are not results for it
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertEqual(len(rows), 0)
+        try:
+            table = self.browser.find_element_by_id('result_table')
+            self.fail("it shouldn't be creating a result table")
+        except:
+            pass
 
         # inputs an existing study
+        inputbox = self.browser.find_element_by_id('text_search')
         inputbox.send_keys(defined_study)
         inputbox.send_keys(Keys.ENTER)
 
         # there are results
-        table = self.browser.find_element_by_id('id_list_table')
+        table = self.browser.find_element_by_id('result_table')
         rows = table.find_elements_by_tag_name('tr')
-        self.assertTrue(len(rows) > 0, "there are results")
+        self.assertGreater(len(rows), 0)
 
         # Chooses one of them
-        rows[0].find_elements_by_tag_name('a').click()
+        rows[0].find_elements_by_tag_name('a')[0].click()
 
-        # the title of the found study includes
-        self.assertIn(defined_study, self.browser.title)
+        # the page of the found study includes the searched term
+        body_text = self.browser.find_element_by_tag_name('body').text
+        self.assertIn(defined_study, body_text)
 
         # Gets the needed information.
-        self.fail('Finish the test!')
+        #self.fail('Finish the test!')
 
 
 
