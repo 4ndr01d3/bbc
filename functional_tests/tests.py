@@ -23,27 +23,28 @@ class NewVisitorTest(LiveServerTestCase):  #1
         to_add.name = defined_study
         to_add.save()
 
-        # Edith has heard about a cool new online to-do app. She goes
         # to check out its homepage
         self.browser.get(self.live_server_url)
 
-        # She notices the page title and header mention to-do lists
+        # She notices the page title and header mention BBCatalog
         self.assertIn('BBCatalog', self.browser.title)
         header_text = self.browser.find_element_by_tag_name('h1').text
         self.assertIn('BBCatalog', header_text)
 
-        # Follows the link to search studies
+        # Follows the link to studies
         search_link = self.browser.find_element_by_css_selector(study_link)
         search_link.click()
         # the new page has the word 'search' in the title
-        self.assertIn('Search', self.browser.title)
+        self.assertIn('Studies', self.browser.title)
 
-        # Inputs a text for an non-existing study in the general text search
+        # The search field has a place holder indicating is to search studies
         inputbox = self.browser.find_element_by_id('text_search')
         self.assertEqual(
             inputbox.get_attribute('placeholder'),
             'Search a study'
         )
+
+        # Inputs a text for an non-existing study in the general text search
         inputbox.send_keys(non_defined_study)
         inputbox.send_keys(Keys.ENTER)
 
@@ -53,6 +54,10 @@ class NewVisitorTest(LiveServerTestCase):  #1
             self.fail("it shouldn't be creating a result table")
         except:
             pass
+
+        # The result page follows the URL pattern for searches
+        new_url = self.browser.current_url
+        self.assertRegex(new_url, '/study/\?text_search=.+')
 
         # inputs an existing study
         inputbox = self.browser.find_element_by_id('text_search')
@@ -74,6 +79,19 @@ class NewVisitorTest(LiveServerTestCase):  #1
         body_text = self.browser.find_element_by_tag_name('body').text
         self.assertIn(defined_study, body_text)
 
+        # Search for another unexisting study
+        inputbox = self.browser.find_element_by_id('text_search')
+
+        # Inputs a text for an non-existing study in the general text search
+        inputbox.send_keys(non_defined_study)
+        inputbox.send_keys(Keys.ENTER)
+
+        # There are not results for it
+        try:
+            table = self.browser.find_element_by_id('result_table')
+            self.fail("it shouldn't be creating a result table")
+        except:
+            pass
         # Gets the needed information.
         self.fail('Finish the test!')
 

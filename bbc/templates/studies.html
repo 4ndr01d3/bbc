@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>BBCatalog - Studies</title>
+    </head>
+    <body>
+        <h1>BBCatalog</h1>
+
+            <a class="study_link" href="/study">Study</a>
+        <p>Page for the studies</p>
+        <p>Search:</p>
+        <form method="GET">
+            <input id ="text_search" type="text" name="text_search" placeholder="Search a study">
+        </form>
+        {% if text_search %}
+            <h2>Results for {{ text_search }}:</h2>
+
+            <table id="result_table">
+                {% for study in studies %}
+                <tr>
+                    <td>
+                        <a href="/study/{{ study.name }}">{{ study.name }}</a>
+                    </td>
+                </tr>
+                {%  endfor %}
+            </table>
+        {% endif %}
+    </body>
+</html>
