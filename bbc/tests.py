@@ -6,7 +6,7 @@ from bbc.views import home_page, study
 from bbc.models import Study
 
 
-class SmokeTest(TestCase):
+class HomePageTest(TestCase):
 
     def test_root_url_resolves_to_home_page_view(self):
         found = resolve('/')
@@ -18,11 +18,6 @@ class SmokeTest(TestCase):
         expected_html = render_to_string('home.html')
         self.assertEqual(response.content.decode(), expected_html)
 
-    def test_study_page_returns_correct_html(self):
-        request = HttpRequest()
-        response = study(request)
-        expected_html = render_to_string('study.html')
-        self.assertEqual(response.content.decode(), expected_html)
 
 
 class StudyTest(TestCase):
@@ -46,14 +41,14 @@ class StudyTest(TestCase):
         Study.objects.create(name='itemey 1')
         Study.objects.create(name='itemey 2')
 
-        request = HttpRequest()
-        request.method = 'POST'
-        request.POST['text_search'] = 'itemey'
+        response = self.client.post("/study/", {"text_search":"itemey"})
 
-        response = study(request)
+        self.assertContains(response, 'itemey 1')
+        self.assertContains(response, 'itemey 2')
 
-        self.assertIn('itemey 1', response.content.decode())
-        self.assertIn('itemey 2', response.content.decode())
+    def test_uses_study_template(self):
+        response = self.client.get('/study/tests/')
+        self.assertTemplateUsed(response, 'study.html')
 
 
 class StudyModelTest(TestCase):

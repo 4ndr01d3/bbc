@@ -1,12 +1,11 @@
 from selenium import webdriver
-import unittest
-
+from django.test import LiveServerTestCase
 #As an External researcher, I want search studies so that I can find studies that include samples of my interest
 from selenium.webdriver.common.keys import Keys
 from bbc.models import Study
 
 
-class NewVisitorTest(unittest.TestCase):  #1
+class NewVisitorTest(LiveServerTestCase):  #1
 
     def setUp(self):
         self.browser = webdriver.Chrome()
@@ -26,7 +25,7 @@ class NewVisitorTest(unittest.TestCase):  #1
 
         # Edith has heard about a cool new online to-do app. She goes
         # to check out its homepage
-        self.browser.get('http://localhost:8000')
+        self.browser.get(self.live_server_url)
 
         # She notices the page title and header mention to-do lists
         self.assertIn('BBCatalog', self.browser.title)
@@ -68,6 +67,9 @@ class NewVisitorTest(unittest.TestCase):  #1
         # Chooses one of them
         rows[0].find_elements_by_tag_name('a')[0].click()
 
+        new_url = self.browser.current_url
+        self.assertRegex(new_url, '/study/.+')
+
         # the page of the found study includes the searched term
         body_text = self.browser.find_element_by_tag_name('body').text
         self.assertIn(defined_study, body_text)
@@ -75,8 +77,3 @@ class NewVisitorTest(unittest.TestCase):  #1
         # Gets the needed information.
         self.fail('Finish the test!')
 
-
-
-
-if __name__ == '__main__':
-    unittest.main()
