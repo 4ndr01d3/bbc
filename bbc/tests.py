@@ -3,6 +3,8 @@ from django.template.loader import render_to_string
 from django.test import TestCase
 from django.core.urlresolvers import resolve
 from bbc.views import home_page, study
+from bbc.models import Study
+
 
 class SmokeTest(TestCase):
 
@@ -35,3 +37,24 @@ class SmokeTest(TestCase):
             {'text_search':  'A text to search'}
         )
         self.assertEqual(response.content.decode(), expected_html)
+
+
+class StudyModelTest(TestCase):
+
+    def test_saving_and_retrieving_studies(self):
+        first_study = Study()
+        first_study.name = 'test_study'
+        first_study.save()
+
+        second_study = Study()
+        second_study.name = 'second_test'
+        second_study.save()
+
+        saved_studies = Study.objects.all()
+        self.assertEqual(saved_studies.count(), 2)
+
+        first_saved_item = saved_studies[0]
+        second_saved_item = saved_studies[1]
+        self.assertEqual(first_saved_item.name, 'test_study')
+        self.assertEqual(second_saved_item.name, 'second_test')
+
