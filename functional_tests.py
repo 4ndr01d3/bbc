@@ -3,6 +3,7 @@ import unittest
 
 #As an External researcher, I want search studies so that I can find studies that include samples of my interest
 from selenium.webdriver.common.keys import Keys
+from bbc.models import Study
 
 
 class NewVisitorTest(unittest.TestCase):  #1
@@ -18,6 +19,10 @@ class NewVisitorTest(unittest.TestCase):  #1
         non_defined_study ="non_defined_study"
         defined_study ="test_study"
         study_link="a.study_link"
+
+        to_add = Study()
+        to_add.name = defined_study
+        to_add.save()
 
         # Edith has heard about a cool new online to-do app. She goes
         # to check out its homepage
@@ -68,10 +73,10 @@ class NewVisitorTest(unittest.TestCase):  #1
         self.assertIn(defined_study, body_text)
 
         # Gets the needed information.
-        #self.fail('Finish the test!')
+        self.fail('Finish the test!')
 
 
 
 
 if __name__ == '__main__':
-    unittest.main(warnings='ignore')
+    unittest.main()

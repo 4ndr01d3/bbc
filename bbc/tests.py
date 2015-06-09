@@ -24,19 +24,36 @@ class SmokeTest(TestCase):
         expected_html = render_to_string('study.html')
         self.assertEqual(response.content.decode(), expected_html)
 
-    def test_study_page_can_save_a_POST_request(self):
+
+class StudyTest(TestCase):
+    def test_study_page_can_search_with_a_POST_request(self):
         request = HttpRequest()
         request.method = 'POST'
-        request.POST['text_search'] = 'A text to search'
+        defined_study = 'a_study_name'
+        request.POST['text_search'] = defined_study
+
+        to_add = Study()
+        to_add.name = defined_study
+        to_add.save()
 
         response = study(request)
 
-        self.assertIn('A text to search', response.content.decode())
-        expected_html = render_to_string(
-            'study.html',
-            {'text_search':  'A text to search'}
-        )
-        self.assertEqual(response.content.decode(), expected_html)
+        self.assertEqual(Study.objects.count(), 1)  #1
+        new_item = Study.objects.first()  #2
+        self.assertEqual(new_item.name, defined_study)  #3
+
+    def test_study_page_displays_all_searched_items(self):
+        Study.objects.create(name='itemey 1')
+        Study.objects.create(name='itemey 2')
+
+        request = HttpRequest()
+        request.method = 'POST'
+        request.POST['text_search'] = 'itemey'
+
+        response = study(request)
+
+        self.assertIn('itemey 1', response.content.decode())
+        self.assertIn('itemey 2', response.content.decode())
 
 
 class StudyModelTest(TestCase):

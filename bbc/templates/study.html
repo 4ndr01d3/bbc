@@ -14,14 +14,16 @@
             {% csrf_token %}
         </form>
         {% if text_search %}
-            <h2>Results:</h2>
+            <h2>Results for {{ text_search }}:</h2>
 
             <table id="result_table">
+                {% for study in studies %}
                 <tr>
                     <td>
-                        <a href="/study/1">{{ text_search }}</a>
+                        <a href="/study/{{ study.name }}">{{ study.name }}</a>
                     </td>
                 </tr>
+                {%  endfor %}
             </table>
         {% endif %}
     </body>
