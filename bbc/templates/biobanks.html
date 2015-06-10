@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Biobanks{% endblock %}
+
+{% block content %}
+    <p>Registered biobanks</p>
+    <ul class="biobank_list">
+        {% for bb in biobanks %}
+        <li><a href="/biobank/{{ bb.id }}/">{{ bb.name }}</a> </li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}

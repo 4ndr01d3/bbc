@@ -20,7 +20,9 @@ from bbc import views
 
 urlpatterns = [
     url(r'^$', views.home_page, name='home'),
-    url(r'^study/$', views.study, name='study'),
-    url(r'^study/(?P<study_id>\w+)/$', views.study, name='study'),
+    url(r'^study/$', views.study_search, name='study_search'),
+    url(r'^study/(?P<study_id>\d+)/$', views.study, name='study'),
+    url(r'^biobank/$', views.biobank, name='biobank'),
+    url(r'^biobank/(?P<biobank_id>\d+)/$', views.biobank_details, name='biobank_details'),
     #url(r'^admin/', include(admin.site.urls)),
 ]

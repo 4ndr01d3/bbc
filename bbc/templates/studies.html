@@ -1,12 +1,7 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>BBCatalog - Studies</title>
-    </head>
-    <body>
-        <h1>BBCatalog</h1>
+{% extends "base.html" %}
+{% block title %}Studies{% endblock %}
 
-            <a class="study_link" href="/study">Study</a>
+{% block content %}
         <p>Page for the studies</p>
         <p>Search:</p>
         <form method="GET">
@@ -19,11 +14,10 @@
                 {% for study in studies %}
                 <tr>
                     <td>
-                        <a href="/study/{{ study.name }}">{{ study.name }}</a>
+                        <a href="/study/{{ study.id }}">{{ study.name }}</a>
                     </td>
                 </tr>
                 {%  endfor %}
             </table>
         {% endif %}
-    </body>
-</html>
+{% endblock %}

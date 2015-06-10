@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Biobanks Details{% endblock %}
+
+{% block content %}
+    <h1>{{ biobank.name }}AHA</h1>
+    <h2>List of Studies</h2>
+    <ul>
+        {% for study in studies %}
+        <li><a href="/study/{{ study.id }}/" class="study_link">{{ study.name }}</a> </li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}

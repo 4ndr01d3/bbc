@@ -21,24 +21,15 @@ class HomePageTest(TestCase):
 
 
 class StudyTest(TestCase):
-    def test_study_page_can_search_with_a_POST_request(self):
-        request = HttpRequest()
-        request.method = 'POST'
+    def test_adding_study_to_the_model(self):
         defined_study = 'a_study_name'
-        request.POST['text_search'] = defined_study
 
         biobank = Biobank.objects.create()
+        to_add = Study.objects.create(name=defined_study, biobank=biobank)
 
-        to_add = Study()
-        to_add.name = defined_study
-        to_add.biobank = biobank
-        to_add.save()
-
-        response = study(request)
-
-        self.assertEqual(Study.objects.count(), 1)  #1
-        new_item = Study.objects.first()  #2
-        self.assertEqual(new_item.name, defined_study)  #3
+        self.assertEqual(Study.objects.count(), 1)
+        new_item = Study.objects.first()
+        self.assertEqual(new_item.name, to_add.name)
 
     def test_study_page_displays_all_searched_items(self):
         biobank = Biobank.objects.create()
@@ -51,11 +42,30 @@ class StudyTest(TestCase):
         self.assertContains(response, 'itemey 2')
 
     def test_uses_study_template(self):
-        response = self.client.get('/study/tests/')
+        biobank = Biobank.objects.create()
+        study = Study.objects.create(name='itemey 1', biobank=biobank)
+        response = self.client.get('/study/{}/'.format(study.id))
         self.assertTemplateUsed(response, 'study.html')
 
+class BiobankTest(TestCase):
+    def test_biobank_page_list_all_biobanks(self):
+        biobank1 = Biobank.objects.create(name="bb1")
+        biobank2 = Biobank.objects.create(name="bb2")
+        response = self.client.get("/biobank/")
+        self.assertContains(response, biobank1.name)
+        self.assertContains(response, biobank2.name)
+        self.assertNotContains(response, "bb3")
 
-class StudyModelTest(TestCase):
+    def test_biobank_page_list_its_studies(self):
+        biobank = Biobank.objects.create()
+        Study.objects.create(name='itemey 1', biobank=biobank)
+        Study.objects.create(name='itemey 2', biobank=biobank)
+        response = self.client.get("/biobank/{}/".format(biobank.id))
+        self.assertContains(response, 'itemey 1')
+        self.assertContains(response, 'itemey 2')
+
+
+class ModelTest(TestCase):
 
     def test_saving_and_retrieving_studies(self):
         biobank = Biobank()
@@ -65,9 +75,6 @@ class StudyModelTest(TestCase):
         first_study.name = 'test_study'
         first_study.biobank = biobank
         first_study.save()
-
-        saved_bb = Biobank.objects.first()
-        self.assertEqual(saved_bb, biobank)
 
         second_study = Study()
         second_study.name = 'second_test'
@@ -83,4 +90,10 @@ class StudyModelTest(TestCase):
         self.assertEqual(first_saved_item.biobank, biobank)
         self.assertEqual(second_saved_item.name, 'second_test')
         self.assertEqual(second_saved_item.biobank, biobank)
+
+    def test_saving_and_retrieving_biobanks(self):
+        biobank = Biobank.objects.create(name="biobank")
+
+        saved_bb = Biobank.objects.first()
+        self.assertEqual(saved_bb, biobank)
 

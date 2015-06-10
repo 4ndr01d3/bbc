@@ -1,17 +1,11 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>BBCatalog - Studies</title>
-    </head>
-    <body>
-        <h1>BBCatalog</h1>
-            <a class="study_link" href="/study">Study</a>
+{% extends "base.html" %}
+{% block title %}Study{% endblock %}
+
+{% block content %}
         <p>Page for the study : {{ study.name }}</p>
 
         <p>Search:</p>
         <form method="GET" action="/study/">
             <input id ="text_search" type="text" name="text_search" placeholder="Search a study">
         </form>
-
-    </body>
-</html>
+{% endblock %}

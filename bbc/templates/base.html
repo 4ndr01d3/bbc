@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>BBCatalog: {% block title %}{% endblock %}</title>
+        {% block head %}
+    	{% endblock %}
+    </head>
+    <body>
+        <h1>BBCatalog</h1>
+        <div>
+            <a class="biobanks_link" href="/biobank">Biobanks</a>
+            <a class="studies_link" href="/study">Studies</a>
+        </div>
+        <div>
+            {% block content %}
+		    {% endblock %}
+        </div>
+    </body>
+</html>
+
+
