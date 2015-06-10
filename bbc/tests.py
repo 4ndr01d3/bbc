@@ -3,7 +3,7 @@ from django.template.loader import render_to_string
 from django.test import TestCase
 from django.core.urlresolvers import resolve
 from bbc.views import home_page, study
-from bbc.models import Study
+from bbc.models import Study, Biobank
 
 
 class HomePageTest(TestCase):
@@ -27,8 +27,11 @@ class StudyTest(TestCase):
         defined_study = 'a_study_name'
         request.POST['text_search'] = defined_study
 
+        biobank = Biobank.objects.create()
+
         to_add = Study()
         to_add.name = defined_study
+        to_add.biobank = biobank
         to_add.save()
 
         response = study(request)
@@ -38,10 +41,11 @@ class StudyTest(TestCase):
         self.assertEqual(new_item.name, defined_study)  #3
 
     def test_study_page_displays_all_searched_items(self):
-        Study.objects.create(name='itemey 1')
-        Study.objects.create(name='itemey 2')
+        biobank = Biobank.objects.create()
+        Study.objects.create(name='itemey 1', biobank=biobank)
+        Study.objects.create(name='itemey 2', biobank=biobank)
 
-        response = self.client.post("/study/", {"text_search":"itemey"})
+        response = self.client.get("/study/", {"text_search":"itemey"})
 
         self.assertContains(response, 'itemey 1')
         self.assertContains(response, 'itemey 2')
@@ -54,12 +58,20 @@ class StudyTest(TestCase):
 class StudyModelTest(TestCase):
 
     def test_saving_and_retrieving_studies(self):
+        biobank = Biobank()
+        biobank.save()
+
         first_study = Study()
         first_study.name = 'test_study'
+        first_study.biobank = biobank
         first_study.save()
+
+        saved_bb = Biobank.objects.first()
+        self.assertEqual(saved_bb, biobank)
 
         second_study = Study()
         second_study.name = 'second_test'
+        second_study.biobank = biobank
         second_study.save()
 
         saved_studies = Study.objects.all()
@@ -68,5 +80,7 @@ class StudyModelTest(TestCase):
         first_saved_item = saved_studies[0]
         second_saved_item = saved_studies[1]
         self.assertEqual(first_saved_item.name, 'test_study')
+        self.assertEqual(first_saved_item.biobank, biobank)
         self.assertEqual(second_saved_item.name, 'second_test')
+        self.assertEqual(second_saved_item.biobank, biobank)
 
