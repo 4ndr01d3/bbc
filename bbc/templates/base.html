@@ -2,18 +2,30 @@
 <html>
     <head>
         <title>BBCatalog: {% block title %}{% endblock %}</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
         {% block head %}
     	{% endblock %}
     </head>
     <body>
-        <h1>BBCatalog</h1>
-        <div>
-            <a class="biobanks_link" href="/biobank">Biobanks</a>
-            <a class="studies_link" href="/study">Studies</a>
-        </div>
-        <div>
-            {% block content %}
-		    {% endblock %}
+        <nav class="navbar navbar-default">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">BBCatalog</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a class="biobanks_link" href="/biobank">Biobanks</a></li>
+                <li><a class="studies_link" href="/study">Studies</a></li>
+            </ul>
+        </nav>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-1">
+                    {% block content %}
+                    {% endblock %}
+                </div>
+            </div>
         </div>
     </body>
 </html>

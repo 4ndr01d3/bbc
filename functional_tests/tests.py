@@ -1,10 +1,25 @@
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
-from django.test import LiveServerTestCase
 from selenium.webdriver.common.keys import Keys
+import sys
 from bbc.models import Study, Biobank
 #import time
 
-class NewVisitorTest(LiveServerTestCase):  #1
+class NewVisitorTest(StaticLiveServerTestCase):  #1
+
+    @classmethod
+    def setUpClass(cls):  #1
+        for arg in sys.argv:  #2
+            if 'liveserver' in arg:  #3
+                cls.server_url = 'http://' + arg.split('=')[1]  #4
+                return  #5
+        super().setUpClass()  #6
+        cls.server_url = cls.live_server_url
+
+    @classmethod
+    def tearDownClass(cls):
+        if cls.server_url == cls.live_server_url:
+            super().tearDownClass()
 
     def setUp(self):
         self.browser = webdriver.Chrome()
@@ -24,11 +39,11 @@ class NewVisitorTest(LiveServerTestCase):  #1
         to_add = Study.objects.create(name=defined_study, biobank=biobank)
 
         # to check out its homepage
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
 
         # She notices the page title and header mention BBCatalog
         self.assertIn('BBCatalog', self.browser.title)
-        header_text = self.browser.find_element_by_tag_name('h1').text
+        header_text = self.browser.find_element_by_css_selector('a.navbar-brand').text
         self.assertIn('BBCatalog', header_text)
 
         # Follows the link to studies
@@ -105,7 +120,7 @@ class NewVisitorTest(LiveServerTestCase):  #1
         study4 = Study.objects.create(name="study4", biobank=biobank2)
 
         # A user goes to the home page
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
 
         # Notices the link for biobanks and click on it
         search_link = self.browser.find_element_by_css_selector("a.biobanks_link")
@@ -151,3 +166,12 @@ class NewVisitorTest(LiveServerTestCase):  #1
         self.assertIn("study1", body_text)
         self.assertNotIn("study2", body_text)
 
+    def test_layout_and_styling(self):
+        # The user goes to the home page
+        self.browser.get(self.server_url)
+
+        # and notices that there is a top navigation bar
+        bar = self.browser.find_element_by_css_selector('.navbar')
+        self.assertEqual(bar.value_of_css_property("position"),
+                         "relative",
+                         "This might indicate that the css is not loading properly");
