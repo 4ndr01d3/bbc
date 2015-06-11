@@ -4,11 +4,17 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from bbc.models import Study, Biobank
 
+def fill_dummy_data_for_tests():
+    biobank1 = Biobank.objects.create(name="biobank1")
+    biobank2 = Biobank.objects.create(name="biobank2")
+    study1 = Study.objects.create(name="study1", biobank=biobank1)
+    study2 = Study.objects.create(name="study2", biobank=biobank1)
+    study3 = Study.objects.create(name="study3", biobank=biobank2)
+    study4 = Study.objects.create(name="study4", biobank=biobank2)
 
 def home_page(request):
-    # biobank = Biobank.objects.create()
-    # Study.objects.create(name='study1', biobank=biobank)
-    # Study.objects.create(name='study2', biobank=biobank)
+    if request.GET.get('testing', '') == "true":
+        fill_dummy_data_for_tests()
     return render(request, 'home.html')
 
 def study(request, study_id=None):

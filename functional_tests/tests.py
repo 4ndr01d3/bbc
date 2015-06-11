@@ -2,8 +2,7 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import sys
-from bbc.models import Study, Biobank
-#import time
+import time
 
 class NewVisitorTest(StaticLiveServerTestCase):  #1
 
@@ -32,15 +31,11 @@ class NewVisitorTest(StaticLiveServerTestCase):  #1
     def test_can_search_studies_and_select_the_result(self):
         # setting things up
         non_defined_study ="non_defined_study"
-        defined_study ="test_study"
+        defined_study ="study1"
         study_link="a.studies_link"
 
-        biobank = Biobank.objects.create()
-        to_add = Study.objects.create(name=defined_study, biobank=biobank)
-
         # to check out its homepage
-        self.browser.get(self.server_url)
-
+        self.browser.get(self.server_url+"?testing=true")
         # She notices the page title and header mention BBCatalog
         self.assertIn('BBCatalog', self.browser.title)
         header_text = self.browser.find_element_by_css_selector('a.navbar-brand').text
@@ -111,16 +106,8 @@ class NewVisitorTest(StaticLiveServerTestCase):  #1
         # self.fail('Finish the test!')
 
     def test_can_list_biobanks_select_one_and_link_to_studies(self):
-        # setting things up
-        biobank1 = Biobank.objects.create(name="biobank1")
-        biobank2 = Biobank.objects.create(name="biobank2")
-        study1 = Study.objects.create(name="study1", biobank=biobank1)
-        study2 = Study.objects.create(name="study2", biobank=biobank1)
-        study3 = Study.objects.create(name="study3", biobank=biobank2)
-        study4 = Study.objects.create(name="study4", biobank=biobank2)
-
         # A user goes to the home page
-        self.browser.get(self.server_url)
+        self.browser.get(self.server_url+"?testing=true")
 
         # Notices the link for biobanks and click on it
         search_link = self.browser.find_element_by_css_selector("a.biobanks_link")
