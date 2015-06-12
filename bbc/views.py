@@ -16,8 +16,10 @@ def fill_dummy_data_for_tests():
     test_data=[biobank1, biobank2, study1, study2, study3, study4]
 
 def remove_dummy_data_for_tests():
+    global test_data
     for datum in test_data:
         datum.delete()
+    test_data = []
 
 def home_page(request):
     if request.GET.get('testing', '') == "create":
