@@ -23,8 +23,10 @@ class NewVisitorTest(StaticLiveServerTestCase):  #1
     def setUp(self):
         self.browser = webdriver.Chrome()
         self.browser.implicitly_wait(3)
+        self.browser.get(self.server_url+"?testing=create")
 
     def tearDown(self):
+        self.browser.get(self.server_url+"?testing=remove")
         self.browser.quit()
 
     #As an External researcher, I want search studies so that I can find studies that include samples of my interest
@@ -35,7 +37,7 @@ class NewVisitorTest(StaticLiveServerTestCase):  #1
         study_link="a.studies_link"
 
         # to check out its homepage
-        self.browser.get(self.server_url+"?testing=true")
+        self.browser.get(self.server_url)
         # She notices the page title and header mention BBCatalog
         self.assertIn('BBCatalog', self.browser.title)
         header_text = self.browser.find_element_by_css_selector('a.navbar-brand').text
@@ -107,7 +109,7 @@ class NewVisitorTest(StaticLiveServerTestCase):  #1
 
     def test_can_list_biobanks_select_one_and_link_to_studies(self):
         # A user goes to the home page
-        self.browser.get(self.server_url+"?testing=true")
+        self.browser.get(self.server_url)
 
         # Notices the link for biobanks and click on it
         search_link = self.browser.find_element_by_css_selector("a.biobanks_link")

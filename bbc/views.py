@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from bbc.models import Study, Biobank
 
+test_data = []
 def fill_dummy_data_for_tests():
     biobank1 = Biobank.objects.create(name="biobank1")
     biobank2 = Biobank.objects.create(name="biobank2")
@@ -11,10 +12,18 @@ def fill_dummy_data_for_tests():
     study2 = Study.objects.create(name="study2", biobank=biobank1)
     study3 = Study.objects.create(name="study3", biobank=biobank2)
     study4 = Study.objects.create(name="study4", biobank=biobank2)
+    global test_data
+    test_data=[biobank1, biobank2, study1, study2, study3, study4]
+
+def remove_dummy_data_for_tests():
+    for datum in test_data:
+        datum.delete()
 
 def home_page(request):
-    if request.GET.get('testing', '') == "true":
+    if request.GET.get('testing', '') == "create":
         fill_dummy_data_for_tests()
+    if request.GET.get('testing', '') == "remove":
+        remove_dummy_data_for_tests()
     return render(request, 'home.html')
 
 def study(request, study_id=None):
